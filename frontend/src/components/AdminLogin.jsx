@@ -1,20 +1,19 @@
 import React, { useState } from 'react';
 
-export function AdminLogin({ onLogin, onBack }) {
+const ADMIN_PASSWORD = 'FreedomAdmin2024!';
+
+export function AdminLogin({ onSuccess, onBack }) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setError('');
-    setLoading(true);
     
-    const success = await onLogin(password);
-    
-    if (!success) {
+    if (password === ADMIN_PASSWORD) {
+      localStorage.setItem('freedommeet_admin', 'true');
+      onSuccess();
+    } else {
       setError('Invalid password');
-      setLoading(false);
     }
   };
 
@@ -52,29 +51,25 @@ export function AdminLogin({ onLogin, onBack }) {
           <h1 style={{ color: '#fff', fontSize: '24px', fontWeight: 600 }}>
             Admin Access
           </h1>
-          <p style={{ color: '#8a8a9a', fontSize: '14px', marginTop: '8px' }}>
-            Authorized personnel only
-          </p>
         </div>
 
         <form onSubmit={handleSubmit}>
-          <div style={{ marginBottom: '20px' }}>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter admin password"
-              style={{
-                width: '100%',
-                padding: '14px 16px',
-                borderRadius: '10px',
-                border: '2px solid #2a2a4a',
-                background: '#1a1a2e',
-                color: '#fff',
-                fontSize: '16px'
-              }}
-            />
-          </div>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Enter admin password"
+            style={{
+              width: '100%',
+              padding: '14px 16px',
+              borderRadius: '10px',
+              border: '2px solid #2a2a4a',
+              background: '#1a1a2e',
+              color: '#fff',
+              fontSize: '16px',
+              marginBottom: '20px'
+            }}
+          />
 
           {error && (
             <div style={{
@@ -82,7 +77,6 @@ export function AdminLogin({ onLogin, onBack }) {
               background: 'rgba(232, 93, 117, 0.2)',
               borderRadius: '8px',
               color: '#e85d75',
-              fontSize: '14px',
               marginBottom: '20px',
               textAlign: 'center'
             }}>
@@ -92,33 +86,17 @@ export function AdminLogin({ onLogin, onBack }) {
 
           <button
             type="submit"
-            disabled={loading || !password}
             style={{
               width: '100%',
               padding: '14px',
-              background: password ? 'linear-gradient(135deg, #e85d75, #d94a62)' : '#2a2a4a',
-              color: password ? '#fff' : '#6a6a7a',
+              background: 'linear-gradient(135deg, #e85d75, #d94a62)',
+              color: '#fff',
               borderRadius: '10px',
               fontWeight: 600,
-              fontSize: '16px',
-              marginBottom: '16px'
+              fontSize: '16px'
             }}
           >
-            {loading ? 'Authenticating...' : 'Login'}
-          </button>
-
-          <button
-            type="button"
-            onClick={onBack}
-            style={{
-              width: '100%',
-              padding: '12px',
-              background: 'transparent',
-              color: '#6a6a7a',
-              fontSize: '14px'
-            }}
-          >
-            ← Back to app
+            Login
           </button>
         </form>
       </div>
