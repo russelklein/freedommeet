@@ -24,6 +24,10 @@ function App() {
   const [view, setView] = useState(() => {
     // Check for secret admin URL
     if (window.location.pathname === '/fm-admin-2024') {
+      // Check if already logged in as admin
+      if (localStorage.getItem('freedommeet_admin') === 'true') {
+        return 'admin';
+      }
       return 'admin-login';
     }
     // Check if user data exists in localStorage
@@ -36,6 +40,11 @@ function App() {
   const [featuredGender, setFeaturedGender] = useState('female');
   const [showReportModal, setShowReportModal] = useState(false);
   const [showSuggestModal, setShowSuggestModal] = useState(false);
+  
+  // Check if admin from localStorage
+  const [isAdminLocal, setIsAdminLocal] = useState(() => {
+    return localStorage.getItem('freedommeet_admin') === 'true';
+  });
   
   const {
     isConnected,
@@ -253,16 +262,13 @@ function App() {
     if (view === 'admin-login') {
       return (
         <AdminLogin
-          onLogin={async (password) => {
-            const success = await adminLogin(password);
-            if (success) {
-              setView('admin');
-              window.history.pushState({}, '', '/');
-            }
-            return success;
+          onSuccess={() => {
+            setIsAdminLocal(true);
+            setView('admin');
+            window.history.pushState({}, '', '/');
           }}
           onBack={() => {
-            setView('home');
+            setView('landing');
             window.history.pushState({}, '', '/');
           }}
         />
@@ -532,7 +538,7 @@ function App() {
     return (
       <Home 
         user={user}
-        isAdmin={isAdmin}
+        isAdmin={isAdminLocal || isAdmin}
         upcomingEvents={upcomingEvents}
         likesCount={likesReceived.length}
         matchesCount={matches.length}
