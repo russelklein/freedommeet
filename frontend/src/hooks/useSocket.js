@@ -885,36 +885,52 @@ export function useSocket() {
     }
   }, []);
 
-  // Admin actions
-  const adminGetUsers = useCallback(() => {
+  // Admin actions - authenticate first if needed
+  const ensureAdminAuth = useCallback(() => {
+    return new Promise((resolve) => {
+      if (socketRef.current && localStorage.getItem('freedommeet_admin') === 'true') {
+        socketRef.current.emit('admin_login', { password: 'FreedomAdmin2024!' });
+        setTimeout(resolve, 100); // Give time for auth
+      } else {
+        resolve();
+      }
+    });
+  }, []);
+
+  const adminGetUsers = useCallback(async () => {
+    await ensureAdminAuth();
     if (socketRef.current) {
       socketRef.current.emit('admin_get_users');
     }
-  }, []);
+  }, [ensureAdminAuth]);
 
-  const adminGetReports = useCallback(() => {
+  const adminGetReports = useCallback(async () => {
+    await ensureAdminAuth();
     if (socketRef.current) {
       socketRef.current.emit('admin_get_reports');
     }
-  }, []);
+  }, [ensureAdminAuth]);
 
-  const adminDeleteUser = useCallback((userId) => {
+  const adminDeleteUser = useCallback(async (userId) => {
+    await ensureAdminAuth();
     if (socketRef.current) {
       socketRef.current.emit('admin_delete_user', { userId });
     }
-  }, []);
+  }, [ensureAdminAuth]);
 
-  const adminGetStats = useCallback(() => {
+  const adminGetStats = useCallback(async () => {
+    await ensureAdminAuth();
     if (socketRef.current) {
       socketRef.current.emit('admin_get_stats');
     }
-  }, []);
+  }, [ensureAdminAuth]);
 
-  const adminExportEmails = useCallback(() => {
+  const adminExportEmails = useCallback(async () => {
+    await ensureAdminAuth();
     if (socketRef.current) {
       socketRef.current.emit('admin_export_emails');
     }
-  }, []);
+  }, [ensureAdminAuth]);
 
   return {
     isConnected,
