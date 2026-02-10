@@ -1184,8 +1184,7 @@ io.on('connection', (socket) => {
   // Get all users (admin only)
   socket.on('admin_get_users', async () => {
     try {
-      const user = await rouletteManager.getUser(socket.id);
-      if (!user || !rouletteManager.isAdmin(user.name)) {
+      if (!rouletteManager.isAdmin(socket.id)) {
         socket.emit('error', { message: 'Not authorized' });
         return;
       }
@@ -1199,8 +1198,7 @@ io.on('connection', (socket) => {
   // Get all reports (admin only)
   socket.on('admin_get_reports', async () => {
     try {
-      const user = await rouletteManager.getUser(socket.id);
-      if (!user || !rouletteManager.isAdmin(user.name)) {
+      if (!rouletteManager.isAdmin(socket.id)) {
         socket.emit('error', { message: 'Not authorized' });
         return;
       }
@@ -1215,8 +1213,7 @@ io.on('connection', (socket) => {
   // Delete user (admin only)
   socket.on('admin_delete_user', async ({ userId }) => {
     try {
-      const user = await rouletteManager.getUser(socket.id);
-      if (!user || !rouletteManager.isAdmin(user.name)) {
+      if (!rouletteManager.isAdmin(socket.id)) {
         socket.emit('error', { message: 'Not authorized' });
         return;
       }
@@ -1230,8 +1227,7 @@ io.on('connection', (socket) => {
   // Get global stats (admin only)
   socket.on('admin_get_stats', async () => {
     try {
-      const user = await rouletteManager.getUser(socket.id);
-      if (!user || !rouletteManager.isAdmin(user.name)) {
+      if (!rouletteManager.isAdmin(socket.id)) {
         socket.emit('error', { message: 'Not authorized' });
         return;
       }
@@ -1254,8 +1250,7 @@ io.on('connection', (socket) => {
   // Export email list (admin only)
   socket.on('admin_export_emails', async () => {
     try {
-      const user = await rouletteManager.getUser(socket.id);
-      if (!user || !rouletteManager.isAdmin(user.name)) {
+      if (!rouletteManager.isAdmin(socket.id)) {
         socket.emit('error', { message: 'Not authorized' });
         return;
       }
