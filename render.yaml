@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: freedommeet-api
+    runtime: node
+    plan: starter
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && node server.js
+    healthCheckPath: /health
+    envVars:
+      - key: REDIS_URL
+        fromDatabase:
+          name: freedommeet-redis
+          property: connectionString
+      - key: FRONTEND_URL
+        sync: false
+      - key: NODE_ENV
+        value: production
+
+databases:
+  - name: freedommeet-redis
+    plan: starter
+    maxmemoryPolicy: allkeys-lru
