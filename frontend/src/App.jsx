@@ -189,6 +189,14 @@ function App() {
 
   // Load data based on view
   useEffect(() => {
+    // Admin view works without user
+    if (view === 'admin' && isAdminLocal) {
+      adminGetUsers();
+      adminGetReports();
+      adminGetStats();
+      return;
+    }
+    
     if (!user) return;
     
     // Always check admin status when user is logged in
@@ -214,7 +222,7 @@ function App() {
       getLikes();
       getMatches();
     }
-  }, [view, user]);
+  }, [view, user, isAdminLocal]);
 
   // Error toast
   const renderError = () => {
@@ -265,12 +273,40 @@ function App() {
           onSuccess={() => {
             setIsAdminLocal(true);
             setView('admin');
-            window.history.pushState({}, '', '/');
           }}
           onBack={() => {
             setView('landing');
             window.history.pushState({}, '', '/');
           }}
+        />
+      );
+    }
+
+    // Admin dashboard - show even without user profile
+    if (view === 'admin' && isAdminLocal) {
+      return (
+        <AdminDashboard
+          rooms={rooms}
+          events={events}
+          users={adminUsers}
+          reports={adminReports}
+          flaggedUsers={flaggedUsers}
+          stats={adminStats}
+          emails={adminEmails}
+          onBack={() => {
+            localStorage.removeItem('freedommeet_admin');
+            setIsAdminLocal(false);
+            setView('landing');
+          }}
+          onUpdateRoom={updateRoom}
+          onDeleteRoom={deleteRoom}
+          onCreateRoom={createDefaultRoom}
+          onDeleteEvent={deleteEvent}
+          onDeleteUser={adminDeleteUser}
+          onLoadUsers={adminGetUsers}
+          onLoadReports={adminGetReports}
+          onLoadStats={adminGetStats}
+          onExportEmails={adminExportEmails}
         />
       );
     }
@@ -387,8 +423,8 @@ function App() {
       );
     }
 
-    // Admin dashboard
-    if (view === 'admin' && isAdmin) {
+    // Admin dashboard (for users who logged in via home button)
+    if (view === 'admin' && (isAdmin || isAdminLocal)) {
       return (
         <AdminDashboard
           users={adminUsers}
