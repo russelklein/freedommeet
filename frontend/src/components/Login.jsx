@@ -2,6 +2,17 @@ import React, { useState, useRef } from 'react';
 
 const DEFAULT_AVATAR = 'https://api.dicebear.com/7.x/avataaars/svg?seed=default&backgroundColor=f5f5f5';
 
+// Blocked usernames (admin-related)
+const BLOCKED_NAMES = ['admin', 'administrator', 'moderator', 'mod', 'owner', 'support', 'help', 'freedommeet', 'system'];
+
+const isNameBlocked = (name) => {
+  const lowerName = name.toLowerCase().replace(/[^a-z]/g, '');
+  return BLOCKED_NAMES.some(blocked => 
+    lowerName.includes(blocked) || 
+    blocked.includes(lowerName)
+  );
+};
+
 // Compress and resize image
 const compressImage = (file, maxWidth = 800, quality = 0.6) => {
   return new Promise((resolve, reject) => {
@@ -49,6 +60,7 @@ const compressImage = (file, maxWidth = 800, quality = 0.6) => {
 export function Login({ onRegister, isConnected }) {
   const [step, setStep] = useState(1); // 1: name & gender, 2: photos & profile
   const [name, setName] = useState('');
+  const [nameError, setNameError] = useState('');
   const [gender, setGender] = useState('');
   const [city, setCity] = useState('');
   const [bio, setBio] = useState('');
@@ -56,6 +68,16 @@ export function Login({ onRegister, isConnected }) {
   const [photos, setPhotos] = useState([]);
   const [isCompressing, setIsCompressing] = useState(false);
   const fileInputRef = useRef(null);
+
+  const handleNameChange = (e) => {
+    const newName = e.target.value;
+    setName(newName);
+    if (isNameBlocked(newName)) {
+      setNameError('This name is not available');
+    } else {
+      setNameError('');
+    }
+  };
 
   const handlePhotoUpload = async (e) => {
     const files = Array.from(e.target.files);
@@ -93,6 +115,10 @@ export function Login({ onRegister, isConnected }) {
 
   const handleStep1Submit = (e) => {
     e.preventDefault();
+    if (isNameBlocked(name)) {
+      setNameError('This name is not available');
+      return;
+    }
     if (name.trim() && gender) {
       setStep(2);
     }
@@ -262,18 +288,23 @@ export function Login({ onRegister, isConnected }) {
               <input
                 type="text"
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={handleNameChange}
                 placeholder="Enter your name"
                 required
                 style={{
                   width: '100%',
                   padding: '14px 16px',
                   borderRadius: '12px',
-                  border: '2px solid #f0ebe7',
+                  border: nameError ? '2px solid #e85d75' : '2px solid #f0ebe7',
                   fontSize: '16px',
                   background: '#faf8f6'
                 }}
               />
+              {nameError && (
+                <p style={{ color: '#e85d75', fontSize: '13px', marginTop: '6px' }}>
+                  {nameError}
+                </p>
+              )}
             </div>
 
             <div style={{ marginBottom: '24px' }}>
