@@ -154,6 +154,53 @@ export function Home({
           </p>
         </div>
 
+        {/* Admin Joe Welcome Card - like MySpace Tom */}
+        <div style={{
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          borderRadius: '16px',
+          padding: '16px',
+          marginBottom: '24px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '14px',
+          boxShadow: '0 4px 15px rgba(102, 126, 234, 0.3)'
+        }}>
+          <div style={{
+            width: '56px',
+            height: '56px',
+            borderRadius: '50%',
+            background: '#fff',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '28px',
+            flexShrink: 0,
+            border: '3px solid rgba(255,255,255,0.3)'
+          }}>
+            👨‍💼
+          </div>
+          <div style={{ flex: 1 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+              <span style={{ color: '#fff', fontWeight: 600, fontSize: '16px' }}>Joe</span>
+              <span style={{
+                background: 'rgba(255,255,255,0.25)',
+                color: '#fff',
+                fontSize: '10px',
+                fontWeight: 700,
+                padding: '2px 8px',
+                borderRadius: '100px',
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px'
+              }}>
+                Admin
+              </span>
+            </div>
+            <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: '14px', lineHeight: 1.4 }}>
+              Welcome to FreedomMeet! I'm here to make sure everyone has a great experience. Enjoy! 🎉
+            </p>
+          </div>
+        </div>
+
         {/* Live Event Banner */}
         {upcomingEvents && upcomingEvents.length > 0 && upcomingEvents[0].status === 'live' && (
           <button
